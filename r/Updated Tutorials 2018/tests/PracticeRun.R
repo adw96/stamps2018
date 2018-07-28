@@ -1,6 +1,6 @@
 setwd("/Users/paulinetrinh/Documents/GitHub/stamps2018/r/Updated Tutorials 2018")
-covariates <- read.table("/Users/paulinetrinh/Documents/GitHub/stamps2018/r/FWS_covariates.txt", header=TRUE, sep="\t", as.is=TRUE)
-abundances <- read.table("/Users/paulinetrinh/Documents/GitHub/stamps2018/r/FWS_OTUs.txt", header=TRUE, row.names = 1, sep="\t", as.is=TRUE)
+covariates <- read.table("/Users/paulinetrinh/stamps2018/r/FWS_covariates.txt", header=TRUE, sep="\t", as.is=TRUE)
+abundances <- read.table("/Users/paulinetrinh/stamps2018/r/FWS_OTUs.txt", header=TRUE, row.names = 1, sep="\t", as.is=TRUE)
 
 abundances[, 1] + 5
 exp(abundances[, 1])
@@ -103,25 +103,118 @@ sample1
 # and to see a particular element of the list, 
 # place the name of that element after the sign $
 sample1$name
+# you can also call the nth element of the list 
+sample1[1]
 
 # you can also make a list of lists!
 all_samples <- list()
 all_samples$sample1 <- sample1
 all_samples$sample2 <- list()
 all_samples$sample2$name <- covariates$SampleName[2]
-all_samples
+all_samples[[1]]
 
 # Exercise: Use a loop to loop through all of the samples, 
 # creating a list of the information corresponding to that sample.
 # (name, location, month, relative abundance table, abundance table)
+for(i in 1:3){
+  assign(paste("Sample", i, sep = ""), i)    
+}
+ls()
+
+name <- paste("Sample", i, sep="") 
+
+
+
+all_samples[[2]][[1]] # will call the first list
+
+alist <- list(2)
+alist <- list(3)
+all_samples <- list()
+for (i in 1:(dim(covariates)[1])) { # cycle go through each row 
+  for (j in 1:(dim(covariates)[2])){ # within each row go through each column
+    anotherlist[j] <- list(covariates[i,j])
+  }
+  all_samples[i] <- list(anotherlist)
+} 
+
+
+l1<- as.list(c(1,2,3,4,5))
 
 # Hint:
 all_samples[[1]]
 all_samples[[2]]
 # Double brackets can also be used to refer to the elements of a list, 
 # instead of naming them individually
-names(all_samples)
+names(relative_abundances)
 
 
 # Bonus: do this with a apply loop (maybe after finishing the function
 # writing section)
+
+
+
+
+###############################################
+# 
+# Function writing
+#
+###############################################
+
+# writing functions is easy in R!
+my_first_function <- function() {
+  cat("Hello World!")
+}
+my_first_function()
+# functions can have no arguments, or several arguments:
+my_second_function <- function(times) {
+  counter <- 1
+  while (counter <= times) { # this is a different type of loop
+    cat("Hello World!\n")
+    counter <- counter + 1
+  }
+}
+my_second_function(3)
+
+# If you are dealing with one OTU table, turning it into
+# relative abundance table is pretty easy. But what if you have 
+# to do it for many OTU tables?
+
+# Exercise: Write a function that takes in an OTU table
+# and returns the relative abundance table
+
+#My Answer
+otu_function <- function(table) {
+  apply(abundances, 2, function(x) x/sum(x))
+}
+relativeabundance_fxn <- otu_function(abundances) 
+  
+# Note that you can construct functions inline:
+all(apply(abundances, 2, function(x) x/sum(x)) == relative_abundances)
+
+# Save your work!
+
+# Congratulations! You are at a level with your R understanding
+# that will get you through most of STAMPS! If you feel so inclined, 
+# have a look through Option C, but at this point, you probably deserve
+# a cold beverage and a break!
+
+
+
+###############################################
+#
+# source and system
+#
+###############################################
+
+# Exercise: Write a script to separate out the different 
+# taxonomy data in shell
+# and run it through R
+
+# Hint: Use source() to run an R script in this session
+# Also works for URLs!
+?source
+
+# Hint: Use system() to run a system command. 
+# In the alpha diversity lab we will see an example
+# of this (running CatchAll via the command line)
+?system
