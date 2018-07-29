@@ -5,5 +5,5 @@ Welcome! This repository contains Amy's teaching materials for STAMPS @ MBL in 2
 Authors: 
 - Amy Willis, Asst Prof, UW Biostatistics (@adw96)
 - Bryan Martin, PhD Candidate, UW Statistics (@bryandmartin)
-- Pauline Trinh, Asst Prof, UW Environmental Health (@paulinetrinh)
+- Pauline Trinh, PhD Student, UW Environmental Health (@paulinetrinh)
 
