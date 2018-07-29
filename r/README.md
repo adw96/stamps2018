@@ -1,6 +1,6 @@
 # STAMPS 2018 R Tutorials 
 
-Welcome! This repository contains R Tutorials for STAMPS 2018 @ MBL. 
+Welcome! This subdirectory contains R Tutorials for STAMPS 2018 @ MBL. 
 </br> Please read through the following instructions on how to download the contents of this folder to your local drive. 
 
 1. Open your command line or Terminal application and enter the directory where you would like to copy the folder. This can be anywhere like your home directory: 
