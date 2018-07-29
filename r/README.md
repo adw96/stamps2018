@@ -8,3 +8,6 @@ Welcome! This repository contains R Tutorials for STAMPS 2018 @ MBL.
 
 2. Use the ```svn``` command line tool to export the contents of the  folder/subdirectory onto your local machine and into a folder called rtutorials_STAMPS2018.
 </br>``` svn export "https://github.com/adw96/stamps2018.git/trunk/r" rtutorials_STAMPS2018```
+
+
+Now you should have a folder called rtutorials_STAMPS2018 that contain the contents of this folder on your local machine! Happy coding! 
