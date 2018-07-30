@@ -77,4 +77,3 @@ strsplit(rownames(abundances)[1], ";")
 # Challenging but valuable exercise: 
 # Use a for loop to find which phylum was observed most frequently
 # when combining all samples 
-

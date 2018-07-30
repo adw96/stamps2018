@@ -10,12 +10,6 @@
 # We're going to make a list corresponding to all of the information
 # about the first sample
 
-# first load the data
-covariates <- read.csv("FWS_covariates.txt", sep = "\t")
-covariates
-abundances <- read.csv("FWS_OTUs.txt", sep = "\t", row.names = 1, header = T)
-abundances
-
 class(abundances)
 names(abundances)
 
