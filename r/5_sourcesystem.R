@@ -28,6 +28,7 @@ cat("This line is being evaluated!")
 
 # Let's test that our functions work on the counts.
 # This should return the sample richness.
+library(breakaway)
 sample_richness(abundances[,1])
 my_first_function()
 
@@ -91,7 +92,7 @@ my_first_function()
 # To see how this works, if you have a Mac or Linux machine, use
 system("say I am running a terminal command through R!")
 # If you have a Windows machine, print your working directory using
-system("dir > printit.txt")
+system("dir")
 # Macs and Linux machines can also do this using
 system("ls")
 
