@@ -10,11 +10,19 @@
 # We're going to make a list corresponding to all of the information
 # about the first sample
 
+# first load the data
+covariates <- read.csv("FWS_covariates.txt", sep = "\t")
+covariates
+abundances <- read.csv("FWS_OTUs.txt", sep = "\t", row.names = 1, header = T)
+abundances
+
+class(abundances)
+names(abundances)
+
 sample1 <- list()
 sample1$name <- covariates$SampleName[1]
 sample1$season <- covariates$Season[1]
 sample1$place <- covariates$Location[1]
-sample1
 sample1$counts <- abundances[,1]
 
 # to see all the information in a list, go
@@ -23,6 +31,14 @@ sample1
 # place the name of that element after the sign $
 sample1$name
 
+# Exercise: 
+# Write a function to take a SampleName and create a list of the above components
+# e.g. your_function("MBL_Jan") return a list with elements name, season, place, 
+# and counts
+# i.e. your_function("JPA_Jan") == sample1  should be TRUE
+
+# Extend your function to include relative abundance
+
 # you can also make a list of lists!
 all_samples <- list()
 all_samples$sample1 <- sample1
@@ -30,17 +46,33 @@ all_samples$sample2 <- list()
 all_samples$sample2$name <- covariates$SampleName[2]
 all_samples
 
+# You can also use the following naming/assigning convention
+all_samples[["sample3"]] <- list()
+all_samples$sample3
+
+
+# You can change the names of the elememts of a list, too!
+# Suppose we want to capitalise them
+# Instead of 
+names(all_samples) 
+# we could overwrite it with
+names(all_samples) <- paste("Sample", 1:3)
+names(all_samples) 
+# paste() pastes strings together
+
+# Double brackets can also be used to refer to the elements of a list, 
+# instead of naming them individually
+all_samples[[1]]
+all_samples[[2]]
+
+
 # Exercise: Use a loop to loop through all of the samples, 
 # creating a list of the information corresponding to that sample.
 # (name, location, month, relative abundance table, abundance table)
 
-# Hint:
-all_samples[[1]]
-all_samples[[2]]
-# Double brackets can also be used to refer to the elements of a list, 
-# instead of naming them individually
-names(all_samples)
 
 
-# Bonus: do this with a apply loop (maybe after finishing the function
-# writing section)
+# Hint 1: Use your function from previously!
+
+# Hint 2: Think about what you should loop over in the outermost loop
+
