@@ -39,13 +39,10 @@
 ## command in rmarkdown package, so if you have a file called
 ## my_rmarkdown.Rmd it can be converted to html using
 ## render("my_rmarkdown.Rmd"). If you are using Rstudio, there is a
-## button that will do this for you.
-## 
-## Exercise 1: There is an example document called
-## rmarkdown_example.Rmd in this directory. Find it and use knitr to
-## convert it to an html document, and look at the result.
+## button "knit" that will do this for you.
 ##
-## Exercise 2: Make your own Rmd document with some of the code and
-## plots from the option B tutorial. Try modifying the width and
+##
+## Exercise: Make your own Rmd document with some of the code and
+## plots from the ggplot lecture. Try modifying the width and
 ## height of the figures (look at the fig.width and fig.height options
-## on this web page: https://yihui.name/knitr/options/). 
+## on this web page: https://yihui.name/knitr/options/).
