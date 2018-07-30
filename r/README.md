@@ -10,4 +10,16 @@ Welcome! This subdirectory contains R Tutorials for STAMPS 2018 @ MBL.
 </br>``` svn export "https://github.com/adw96/stamps2018.git/trunk/r" rtutorials_STAMPS2018```
 
 
-Now you should have a folder called rtutorials_STAMPS2018 that contains the contents of this folder on your local machine! Happy coding! 
+Now you should have a folder called rtutorials_STAMPS2018 that contains the contents of this folder on your local machine! 
+
+It is suggested that you follow the tutorials in the following order: 
+``` 
+loops.R
+apply.R
+function.R
+lists.R
+source_system.R
+parallel.R
+markdown.R 
+```
+Happy coding!
