@@ -29,7 +29,14 @@ all(abundances/fast_total_reads == relative_abundances)
 # are all variations on apply for different 
 # situations
 
-# BRYAN to write sapply() and mapply()
+# Use lapply if you want to return a list
+lapply(abundances, sum)
+
+# You can turn that list back into a vector (or matrix, depending on the output) using simplify2array
+lapply(abundances, sum) %>% simplify2array
+
+# This is equivalent to the command sapply
+sapply(abundances,  sum)
 
 # (Note from Amy, cerca 2014) 
 # In writing this tutorial, I just learnt about prop.table,

@@ -1,57 +1,93 @@
 ###############################################
 #
-# parallelisation
-# By Lan Huong Nguyen
+# parallel
 #
 ###############################################
 
-# In Option B we calculated the relative abundance of the taxa
-# using for loops
-# Now try to perform the same but in parallel
+# Before we begin, we need to install and load the 'foreach' and 'doParallel' packages
+install.packages("foreach")
+install.packages("doParallel")
 
-# If you haven't done it before, install the 'foreach' and 'doParallel' packages
-# install.packages("foreach")
-# install.packages("doParallel")
-
-# Load the packages 
 library(doParallel)
+library(foreach)
 
-# Set the number of cores
+# Next, we set the number of cores
+# detectCores() returns the number of cores available in your machine.
+# We subtract 1 to avoid processor issues.
 no_cores <- detectCores() - 1
-cl<-makeCluster(no_cores)
+# We then tell R to make a create a cluster with the desired number of cores
+cl <- makeCluster(no_cores)
+# Lastly, we want to register the backend for our cluster.
 registerDoParallel(cl)
+# Use the help files of any of these commands to see more details
+# and to learn about how to create different types of clusters,
+# such as PSOCK or Fork. (Don't worry if this doesn't make sense).
 
-# Use foreach function to compute the relative abundances
+# Now that we have a cluster registered, let's use it!
+# Start by learning about the foreach() function.
+?foreach
+
+# The first argument is what we want to parallelize over.
+# For example, this will commonly be an iteration count or
+# index of something.
+
+# Take a look at the code below, but don't run it yet!
+
+######
+# relative_abundances <- 
+#   foreach(current_index = 1:ncol(abundances), 
+#           .combine = cbind)  %dopar% {
+#             number_reads <- sum(abundances[, current_index]) 
+#             abundances[, current_index]/number_reads
+#           }
+#####
+
+# In this example, we will calculate relative abundances.
+# We will want to parallelize over the columns of our counts table,
+# so we index our parallelization using 1:ncol(abundances).
+# The .combine argument tells foreach how to combine our output.
+# Our function, when only applied to one sample (not in parallel),
+# will return a vector of relative abundances. We want to combine
+# this output for each sample into a matrix, so we will 
+# column bind them together using .combine = cbind.
+# This is the end of the foreach arguments. 
+# Next, we tell foreach to run in parallel over our cluster
+# (which we already generated) using %dopar%.
+# Finally, just like with any other loop, we wrap our 
+# tasks in brackets, making sure to index our columns
+# using the index argument we defined in foreach (current_index)!
 relative_abundances <- 
-  foreach(current_index = 1:(dim(abundances)[2]), 
+  foreach(current_index = 1:ncol(abundances), 
           .combine = cbind)  %dopar% {
             number_reads <- sum(abundances[, current_index]) 
             abundances[, current_index]/number_reads
           }
 
 
-# Check if results match the standard calculations
-all(relative_abundances == scale(abundances, center = F, scale = colSums(abundances)))
+# Let's check to make sure that our results match standard calculations
+relative_abundances_nonparallel <- scale(abundances, center = F, scale = colSums(abundances))
+all(relative_abundances == relative_abundances_nonparallel)
 
-# Note that:'.combine' argument tells foreach function how to combine results
-# from multiple threads. '.combine' can be specified as a function or 
+# NOTE:'.combine' can be specified as a function or 
 # a character string e.g. c, cbind, rbind, list, '+', '*'
 
 # Also observe that variables from the local environment are by default available
-# for each thread without specification. This is not true of the variables
-# in the parent environment, e.g. the following gives an error:
-
-test <- function () {
-  foreach(current_index = 1:(dim(abundances)[2]), 
+# in each core without specification. This is not true of the variables
+# in the parent environment. For example, if we define our parallel 
+# code as a function
+this_should_break <- function() {
+  foreach(current_index = 1:ncol(abundances), 
           .combine = cbind)  %dopar% {
             number_reads <- sum(abundances[, current_index]) 
             abundances[, current_index]/number_reads
           }
 }
-relative_abundances <- test()
+# and then run this function, it should break.
+relative_abundances <- this_should_break()
 
-# To export specific variables to the cluster use the 'export' argument
-test <- function () {
+# We can fix this by exporting specific variables to the cluster cores.
+# To do this we use the 'export' argument.
+this_should_work <- function() {
   foreach(current_index = 1:(dim(abundances)[2]), 
           .combine = cbind,
           .export = "abundances")  %dopar% {
@@ -59,56 +95,59 @@ test <- function () {
             abundances[, current_index]/number_reads
           }
 }
-relative_abundances <- test()
+# It should now work if we run it.
+relative_abundances <- this_should_work()
 
 # Check if results match the standard calculations
-all(relative_abundances == scale(abundances, center = F, scale = colSums(abundances)))
+all(relative_abundances == relative_abundances_nonparallel)
 
-# When you are done working in paralel close the cluster so that resources 
-# are returned to the operating system
+# When you are done working in parallel, we close the cluster
+# so that resources are returned to the operating system
 stopCluster(cl)
 
 
-# In R  lapply() is a faster and cleaner way to perform for loop tasks. 
-# You can speed things up even further by using parallel equivalent of 
-# lapply() and  sapply(), parLapply() and parSapply() respectively. These
-# functions are available in the package, 'parallel'.
-
-# install.packages("parallel")
-
+# The command lapply() is often a cleaner way to perform for loop tasks. 
+# You can speed up apply-type functions using their parallel equivalents.
+# For example, we use parLapply() to run lapply() in parallel,
+# and we use parSapply() to run sapply() in parallel.
+# These functions are available in the package parallel, 
+# so let's install and load that package.
+install.packages("parallel")
 library(parallel)
 
-# Calculate the number of cores
-no_cores <- detectCores() - 1
-
-# Initiate cluster
+# We closed our cluster earlier, so let's make another.
 cl <- makeCluster(no_cores)
 
-# Export variable 'abundances' to the cluster
+# Next we export our variable 'abundances' to all cluster cores.
 clusterExport(cl, "abundances")
 
-# If you are using some specific packages inside parLapply, you need to load 
-# them through  clusterEvalQ(), e.g. clusterEvalQ(cl, library(phyloseq))
+# NOTE: If you are using some specific packages inside parLapply, 
+# you need to load them using clusterEvalQ().
+# For example, if we want to make sure the cluster can use phyloseq, we use
+# clusterEvalQ(cl, library(phyloseq))
 
-# Use parLapply() function
+# Let's try out parLapply. The structure is similar to foreach, the first
+# argument is the name of our cluster, cl. Next, we define our 
+# index variable as in foreach(). Finally, we define our function, similar
+# to other apply-type functions.
 relative_abundances <- 
   parLapply(cl, 
-            1:(dim(abundances)[2]),
+            1:ncol(abundances),
             function(current_index) {
               print(class(current_index))
               number_reads <- sum(abundances[, current_index]) 
               abundances[, current_index]/number_reads
             })
 
-# Close the cluster
+# Again, we close our cluster
 stopCluster(cl)
 
-# Currently, 'relative_abundances' is a list. To converti it to a matrix do
-# the following:
+# Since we used parLapply, relative_abundances is a list.
+# To convert it to a matrix we use:
 relative_abundances <- do.call("cbind", relative_abundances)
 
 # Check if results match the standard calculations
-all(relative_abundances == scale(abundances, center = F, scale = colSums(abundances)))
+all(relative_abundances == relative_abundances_nonparallel)
 
-# For more details on parallelisms check the following link:
+# For more details on parallelization in R:
 # http://gforge.se/2015/02/how-to-go-parallel-in-r-basics-tips/
