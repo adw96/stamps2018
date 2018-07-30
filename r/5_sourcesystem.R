@@ -13,7 +13,7 @@
 # Let's start by practicing sourcing a file.
 # First, create a new R file by navigating to File -> New File -> R Script
 
-# Exercise: Write a function called "sample_richness".
+# Exercise: Write a function called "my_sample_richness".
 # This function should take in a vector of counts and returns
 # sample richness (the number of OTUs with non-zero count in the sample).
 
@@ -28,17 +28,16 @@ cat("This line is being evaluated!")
 
 # Let's test that our functions work on the counts.
 # This should return the sample richness.
-library(breakaway)
-sample_richness(abundances[,1])
+my_sample_richness(abundances[,1])
 my_first_function()
 
 # Next, let's remove these functions from our environment, so R
 # is no longer aware that the functions exist.
-rm(sample_richness)
+rm(my_sample_richness)
 rm(my_first_function)
 
 # What happens when we try to run our functions again?
-sample_richness(abundances)
+my_sample_richness(abundances)
 my_first_function()
 
 # You SHOULD see an error!
@@ -63,7 +62,7 @@ source("./sample_richness.R")
 
 # When you source a file, R evaluates the entire file from top
 # to bottom. Let's check to see if the rest of the file compiled.
-apply(sample_richness, 2, abundances)
+apply(my_sample_richness, 2, abundances)
 my_first_function()
 
 # Hopefully, these functions are now working again!
