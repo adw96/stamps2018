@@ -25,9 +25,13 @@ all(sweep(abundances, 2, fast_total_reads, "/") == relative_abundances)
 # not the columns!
 all(abundances/fast_total_reads == relative_abundances)
 
-# mapply(), tapply(), lapply() are all variations on apply for different 
+# sapply(), mapply(), tapply(), lapply() 
+# are all variations on apply for different 
 # situations
 
+# BRYAN to write sapply() and mapply()
+
+# (Note from Amy, cerca 2014) 
 # In writing this tutorial, I just learnt about prop.table,
 # which turns a matrix into its relative abundances across a fixed margin.
 # Cool!

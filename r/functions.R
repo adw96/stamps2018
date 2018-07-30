@@ -9,10 +9,12 @@ my_first_function <- function() {
   cat("Hello World!")
 }
 my_first_function()
-# functions can have no arguments, or several arguments:
+# This is a function with no arguments
+
+# Functions can have no arguments, or several arguments:
 my_second_function <- function(times) {
   counter <- 1
-  while (counter <= times) { # this is a different type of loop
+  while (counter <= times) { # while() is a type of loop
     cat("Hello World!\n")
     counter <- counter + 1
   }
@@ -27,11 +29,11 @@ my_second_function(3)
 # and returns the relative abundance table
 
 # Note that you can construct functions inline:
-all(apply(abundances, 2, function(x) x/sum(x)) == relative_abundances)
+apply(abundances, 2, function(x) {x/sum(x)})
 
-# Save your work!
 
 # Congratulations! You are at a level with your R understanding
 # that will get you through most of STAMPS! If you feel so inclined, 
-# have a look through source_system.R, parallel.R, and markdown.R, but at this point, you probably deserve
+# have a look through source_system.R, parallel.R, and markdown.R, 
+# but at this point, you probably deserve
 # a cold beverage and a break!
