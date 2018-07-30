@@ -16,7 +16,7 @@ It is suggested that you follow the tutorials in the following order:
 ``` 
 loops.R
 apply.R
-function.R
+functions.R
 lists.R
 source_system.R
 parallel.R
