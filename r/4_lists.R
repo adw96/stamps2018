@@ -10,12 +10,6 @@
 # We're going to make a list corresponding to all of the information
 # about the first sample
 
-# first load the data
-covariates <- read.csv("FWS_covariates.txt", sep = "\t")
-covariates
-abundances <- read.csv("FWS_OTUs.txt", sep = "\t", row.names = 1, header = T)
-abundances
-
 class(abundances)
 names(abundances)
 
@@ -27,6 +21,8 @@ sample1$counts <- abundances[,1]
 
 # to see all the information in a list, go
 sample1
+# to see just the beginning
+head(sample1)
 # and to see a particular element of the list, 
 # place the name of that element after the sign $
 sample1$name

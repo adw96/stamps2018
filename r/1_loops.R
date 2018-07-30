@@ -4,10 +4,6 @@
 #
 ###############################################
 
-# Load in the data we'll be using
-covariates <- read.csv("FWS_covariates.txt", sep = "\t")
-abundances <- read.csv("FWS_OTUs.txt", sep = "\t", row.names = 1, header = T)
-
 # R is a vectorised language, so for a function that takes 1 argument, 
 # you can apply across a vector
 abundances[, 1] + 5
@@ -15,12 +11,12 @@ abundances[, 1]^2
 
 # What about for more complex functions?
 
-# In most cases, dplyr takes care of this for us
-# For example, 
-install.packages("dplyr")
-install.packages("magrittr")
+
+# In most cases, dplyr takes care of this for us, first, let's laod it
 library(dplyr) 
 library(magrittr)
+
+# Now we 
 covariates %>%
   select(SampleName, Location, Season) 
 # loops through the columns of covariates to select certain variables, and
@@ -77,4 +73,3 @@ strsplit(rownames(abundances)[1], ";")
 # Challenging but valuable exercise: 
 # Use a for loop to find which phylum was observed most frequently
 # when combining all samples 
-

@@ -4,10 +4,7 @@
 #
 ###############################################
 
-# Before we begin, we need to install and load the 'foreach' and 'doParallel' packages
-install.packages("foreach")
-install.packages("doParallel")
-
+# Before we begin, we load the 'foreach' and 'doParallel' packages
 library(doParallel)
 library(foreach)
 
@@ -82,7 +79,9 @@ this_should_break <- function() {
             abundances[, current_index]/number_reads
           }
 }
-# and then run this function, it should break.
+
+# and then run this function.
+# This SHOULD break!
 relative_abundances <- this_should_break()
 
 # We can fix this by exporting specific variables to the cluster cores.
@@ -112,7 +111,6 @@ stopCluster(cl)
 # and we use parSapply() to run sapply() in parallel.
 # These functions are available in the package parallel, 
 # so let's install and load that package.
-install.packages("parallel")
 library(parallel)
 
 # We closed our cluster earlier, so let's make another.
@@ -143,8 +141,12 @@ relative_abundances <-
 stopCluster(cl)
 
 # Since we used parLapply, relative_abundances is a list.
+class(relative_abundances)
+
 # To convert it to a matrix we use:
 relative_abundances <- do.call("cbind", relative_abundances)
+class(relative_abundances)
+# It should now be of class "matrix"
 
 # Check if results match the standard calculations
 all(relative_abundances == relative_abundances_nonparallel)
