@@ -11,12 +11,14 @@ abundances <- read.csv("FWS_OTUs.txt", sep = "\t", row.names = 1, header = T)
 # R is a vectorised language, so for a function that takes 1 argument, 
 # you can apply across a vector
 abundances[, 1] + 5
-exp(abundances[, 1])
+abundances[, 1]^2
 
 # What about for more complex functions?
 
 # In most cases, dplyr takes care of this for us
 # For example, 
+install.packages("dplyr")
+install.packages("magrittr")
 library(dplyr) 
 library(magrittr)
 covariates %>%
