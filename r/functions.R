@@ -30,10 +30,3 @@ my_second_function(3)
 
 # Note that you can construct functions inline:
 apply(abundances, 2, function(x) {x/sum(x)})
-
-
-# Congratulations! You are at a level with your R understanding
-# that will get you through most of STAMPS! If you feel so inclined, 
-# have a look through source_system.R, parallel.R, and markdown.R, 
-# but at this point, you probably deserve
-# a cold beverage and a break!
