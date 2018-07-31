@@ -42,9 +42,12 @@ water
 
 # Enter: breakaway :D
 
-# devtools::install_github("adw96/breakaway")
-# library(breakaway)
-# If this doesn't work, run library(devtools) and try again
+devtools::install_github("adw96/breakaway")
+library(breakaway)
+# If this doesn't work, run install.packages(devtools) and try again
+# If this doesn't work, read the error message carefully 
+# and try to debug it yourself (this is what you have to do at home -- so
+# it's good to practice here)
 # If this doesn't work, call a TA over
 
 
@@ -109,12 +112,28 @@ ba_tr %>% plot
 # the paper: Willis & Bunge (2015), Biometrics)
 
 # breakaway is easy to use! You can run it on one frequency table, but
-# in general you'll run it on a phyloseq object
+# in general you'll run it on a phyloseq object, like here:
 ba <- breakaway(water)
 ba 
+
+# you can plot using our default plotting function
 plot(ba, water, color = "SampleType")
 
+# or you can take the estimates and turn them into 
+# data frames so you can plot them yourself
+summary(ba) 
+# these are in the same order as 
 
+# 
+water %>%
+  chao_bunge %>%
+  plot(water, color = "SampleType")
+
+# grrrrr don't use this one
+water %>%
+  chao1 %>%
+  plot(water, color = "SampleType")
+# (but note that these are the real error bars on this estimate)
 
 # To check that we are in the right directory, we load in the data:
 otu_table <- read.table("mask_data.txt",header=T)
