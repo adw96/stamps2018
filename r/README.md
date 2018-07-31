@@ -6,7 +6,7 @@ Welcome! This subdirectory contains R Tutorials for STAMPS 2018 @ MBL.
 
 2. Open RStudio.
 
-3. Set your filepath to a location on your computer that you in which you are comfortable saving files using:
+2. Set your filepath to a location on your computer in which you are comfortable saving files using:
 ``` r
 setwd("YOUR FILEPATH HERE")
 ```
@@ -33,17 +33,14 @@ covariates <- read.csv("FWS_covariates.txt", sep = "\t")
 abundances <- read.csv("FWS_OTUs.txt", sep = "\t", row.names = 1, header = T)
 ```
 
-8. Next, install all the packages we will be needing for this tutorial:
+8. Next, install all the packages we will be needing:
 ``` r 
 install.packages("dplyr")
 install.packages("magrittr")
-install.packages("devtools")
-install.packages("ggplot2")
-install.packages("phyloseq")
 install.packages("parallel")
 install.packages("foreach")
 install.packages("doParallel")
-devtools::install_github("adw96/breakaway")
+
 ```
 
 9. You are now set up! The tutorials are set up in the following order:
@@ -56,5 +53,22 @@ devtools::install_github("adw96/breakaway")
 6_parallel.R
 7_markdown.R 
 ```
+
+## Assignment for tomorrow: Please complete the following tonight so that everything is setup for tomorrow
+
+> **NOTE**  
+**If you have a windows computer, you can skip the first step and start at step 2.** If you have a Mac, start at step 1. 
+
+1. Download gfortran, which is needed for certain R packages and will make your life much easier in the future! Link: https://gcc.gnu.org/wiki/GFortranBinaries
+
+
+2. Install the following packages:
+```
+install.packages("devtools")
+source("https://bioconductor.org/biocLite.R")
+biocLite("phyloseq")
+devtools::install_github("adw96/breakaway")
+```
+
 
 Happy coding!
