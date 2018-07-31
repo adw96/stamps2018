@@ -26,6 +26,7 @@ GlobalPatterns %>% sample_data
 # To speed things up, let's just aggregate taxa to the 
 # order level. So we're going to estimate *order* level 
 # diversity 
+# This might take a while, but it will speed things up later
 water <- GlobalPatterns %>%
   subset_samples(SampleType %in% c("Freshwater", 
                                    "Freshwater (creek)", 
@@ -41,6 +42,7 @@ water
 # understate uncertainty, and don't allow hypothesis testing
 
 # Enter: breakaway :D
+# breakaway was specifically designed for these tasks
 
 devtools::install_github("adw96/breakaway")
 library(breakaway)
@@ -58,7 +60,7 @@ plot(observed_c, water, color = "SampleType")
 
 # Hmmmm, but what if we observed these samples at different depth?
 # Depth may be confounded with observed richness. 
-# Let's practice ggplot to look at this
+# Let's practice ggplot and phyloseq to look at this
 
 data.frame("observed_richness" = (observed_c %>% summary)$estimate,
            "depth" = phyloseq::sample_sums(water), # Easter egg! Phyloseq's function to get depth
@@ -77,7 +79,7 @@ ba <- breakaway(water)
 ba 
 plot(ba, water, color = "SampleType")
 
-## Cool! How do these work?
+## Cool! How do these estimates work?
 
 ## Let's look at just one sample
 tr <- water %>% subset_samples(X.SampleID == "TRRsed1")
@@ -87,7 +89,7 @@ tr
 fc <- tr %>% otu_table %>% make_frequency_count_table
 # this is the frequency count table for this dataset
 fc %>% head(10)
-# So there are 11 singletons (Orders observed one) here
+# So there are 11 singletons (Orders observed once) here
 
 # Quiz: how many times was the most common Order observed?
 # (Hint: what does tail() do?)
@@ -116,24 +118,95 @@ ba_tr %>% plot
 ba <- breakaway(water)
 ba 
 
-# you can plot using our default plotting function
+# you can plot using our default plotting function...
 plot(ba, water, color = "SampleType")
 
-# or you can take the estimates and turn them into 
+# ... or you can take the estimates and turn them into 
 # data frames so you can plot them yourself
 summary(ba) 
-# these are in the same order as 
+# these are in the same order as the phyloseq samples:
+water %>% otu_table %>% sample_names
 
-# 
+# Also, since the breakaway package implements lots of
+# species richness estimates, you could choose a different one
+# e.g., if you wanted something more stable
 water %>%
   chao_bunge %>%
   plot(water, color = "SampleType")
+
+# However, note that species richness is a challenging problem, 
+# and that error bars will generally be large
 
 # grrrrr don't use this one
 water %>%
   chao1 %>%
   plot(water, color = "SampleType")
 # (but note that these are the real error bars on this estimate)
+
+# In many cases the absolute number of species
+# isn't as interesting as comparing ecosystems. 
+# Let's test the hypothesis that different types of water systems
+# have the same microbial diversity
+betta()
+
+#### Let's move on to estimating other diversity indices
+
+# Species richness counts all species equally
+# However, if a species is rare you may think that
+# it doesn't play a role in the community.
+#  Another alpha diversity index, called the Shannon
+# index, works similarly to species richness but it
+# down weights the importance of  rare taxa
+
+# Since rare taxa may be dubious, the Shannon index
+# is very popular in microbial ecology
+
+# For the reasons discussed in lecture, it's important to
+# estimate the Shannon diversity using a valid
+# estimator of the Shannon diversity.
+# It's even more important to come up with
+# the standard error
+
+# Shockingly, until recently, there were no tools
+# to estimate Shannon diversity
+# in the presence of an ecological/microbial network!
+
+# DivNet is a new tool that allows you to estimate this
+
+# Check out our preprint: Willis & Martin (2018+), bioRxiv
+
+# Let's load the package DivNet
+devtools::install_github("adw96/DivNet")
+library(DivNet)
+
+# DivNet is very flexible, but by default
+# DivNet will estimate the
+# microbial network and use it only to
+# adjust the standard errors on diversity estimates
+dv_water <- divnet(water)
+dv_water
+plot(dv_water$shannon)
+
+# Let's compare this to the naive approach of
+# just "plugging in" the observed proportions
+# to the Shannon diversity  formula
+
+plot(water %>% breakaway::shannon)
+
+# You will notice that the estimates are the same
+# as previously, but the error bars differ significantly
+# i.e., *there are error bars*
+
+# The error bars were the same as previously
+# because we haven't told DivNet anything about the experimental
+# design. Here we observed
+# 4 different water systems, so we will add this
+# as a covariate
+dv_water <- water %>%
+  divnet(x = "SampleType")
+
+# 
+
 
 # To check that we are in the right directory, we load in the data:
 otu_table <- read.table("mask_data.txt",header=T)
