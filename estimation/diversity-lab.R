@@ -123,9 +123,10 @@ plot(ba, water, color = "SampleType")
 
 # ... or you can take the estimates and turn them into 
 # data frames so you can plot them yourself
-summary(ba) 
 # these are in the same order as the phyloseq samples:
-water %>% otu_table %>% sample_names
+summary(ba) %>%
+  add_column("SampleNames" = water %>% otu_table %>% sample_names)
+
 
 # Also, since the breakaway package implements lots of
 # species richness estimates, you could choose a different one
@@ -147,31 +148,73 @@ water %>%
 # isn't as interesting as comparing ecosystems. 
 # Let's test the hypothesis that different types of water systems
 # have the same microbial diversity
-betta()
 
-#### Let's move on to estimating other diversity indices
+# betta() works like a regression model
+# but it accounts for the uncertainty in estimating
+# diversity
 
-# Species richness counts all species equally
-# However, if a species is rare you may think that
+bt <- betta(summary(ba)$estimate,
+            summary(ba)$error,
+            DivNet::make_design_matrix(water, "SampleType"))
+bt$table
+
+# betta() estimates that the mean Order-llevel
+# diversity in Freshwater is 154 orders.
+# It estimates that the diversity in
+# creeks in significantly higher
+# (on average 23 orders) while oceans
+# have significantly lower diversity
+# (on average, 16 orders). However, 
+# estuaries do not have significantly different diversity 
+# than fresh water sources.
+
+# Note that these estimates account for
+# different sequencing depths!
+# breakaway estimate of the number of missing species
+# based on the sequence depth and
+# number of rare taxa in the data
+
+# The citation for betta() is
+# Willis, Bunge & Whitman, 2016, JRSS-C
+
+# Please use it! It's very important that
+# you account for the error bars in
+# diversity when doing hypothesis testing.
+# t.test, lm(), aov(), anova() do not
+# account for this -- betta does!
+
+#### #### #### #### #### #### #### #### 
+#### OTHER DIVERSITY INDICES
+#### #### #### #### #### #### #### #### 
+
+# Species richness counts all species equally.
+# However, if a species is rare, you may think that
 # it doesn't play a role in the community.
 #  Another alpha diversity index, called the Shannon
 # index, works similarly to species richness but it
-# down weights the importance of  rare taxa
+# downweights the importance of rare taxa
+# i.e. if a taxon is present but in low abundance, 
+# it doesn't count for "1" taxon, but something less 
+# (to reflect its low abundance)
 
 # Since rare taxa may be dubious, the Shannon index
 # is very popular in microbial ecology
 
-# For the reasons discussed in lecture, it's important to
+# For the reasons discussed in the lecture, it's important to
 # estimate the Shannon diversity using a valid
 # estimator of the Shannon diversity.
 # It's even more important to come up with
-# the standard error
+# the standard error, and use that
+# standard error in testing using betta()
 
 # Shockingly, until recently, there were no tools
 # to estimate Shannon diversity
 # in the presence of an ecological/microbial network!
 
-# DivNet is a new tool that allows you to estimate this
+# DivNet is a new tool that allows you to estimate this.
+# It also adjusts for different sequencing depths
+# so you don't have to throw away any data
+# (you don't need to rarefy)!
 
 # Check out our preprint: Willis & Martin (2018+), bioRxiv
 
@@ -180,18 +223,42 @@ devtools::install_github("adw96/DivNet")
 library(DivNet)
 
 # DivNet is very flexible, but by default
-# DivNet will estimate the
-# microbial network and use it only to
+# it estimates the
+# microbial network and uses it only to
 # adjust the standard errors on diversity estimates
-dv_water <- divnet(water)
-dv_water
-plot(dv_water$shannon)
+
+# If looked at the package parallel
+# in the "more R" tutorials, 
+# you should be able to run DivNet in parallel: 
+dv_water <- divnet(water, ncores = 4)
+# (this might take a minute)
+
+# # Otherwise, run it in series:
+# dv_water <- divnet(water)
+
+# DivNet outputs a list of the estimates
+# shannon, simpson (alpha diversity)
+# bray-curtis, euclidean (beta diversity)
+dv_water %>% names
+
+# Let's take a look at the Shannon estimates
+plot(dv_water$shannon, 
+     water, 
+     col = "SampleType")
 
 # Let's compare this to the naive approach of
 # just "plugging in" the observed proportions
 # to the Shannon diversity  formula
 
-plot(water %>% breakaway::shannon)
+plot(dv_water$shannon, 
+     water, 
+     col = "SampleType")
+
+
+# TODO
+plot(water %>% breakaway::sample_shannon, 
+     water, 
+     col = "SampleType")
 
 # You will notice that the estimates are the same
 # as previously, but the error bars differ significantly
