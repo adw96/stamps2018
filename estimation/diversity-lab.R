@@ -1,10 +1,18 @@
-# TODO: 
-# remove save()
-
 ## diversity-lab.R
-## A script to introduce you to alpha diversity estimation and comparison
+## A script to introduce you to diversity estimation and comparison
 
-## Lab author: Amy Willis
+## Before starting this tutorial, please run
+devtools::install_github("adw96/breakaway")
+library(breakaway)
+apples(breakaway) ## something should output
+devtools::install_github("adw96/DivNet")
+library(DivNet)
+divnet ## something should output
+# If you run into difficulty, 
+# try debugging it yourself, and if you can't, 
+# call over a TA
+
+## Lab authors: Amy Willis, Bryan Martin, Pauline Trinh
 
 ## breakaway authors: Amy Willis, Kathryn Barger, John Bunge, 
 ##                        Bryan Martin, 2012+
@@ -40,8 +48,6 @@ water <- GlobalPatterns %>%
   tax_glom("Order")
 water
 
-save(water, file = "water.RData")
-
 # phyloseq has some inbuilt tools for exploring alpha
 # diversity, but they're not great. They understate richness,
 # understate uncertainty, and don't allow hypothesis testing
@@ -49,9 +55,8 @@ save(water, file = "water.RData")
 # Enter: breakaway :D
 # breakaway was specifically designed for these tasks
 
-devtools::install_github("adw96/breakaway")
 library(breakaway)
-# If this doesn't work, run install.packages(devtools) and try again
+# If this doesn't work, run install.packages("devtools") and try again
 # If this doesn't work, read the error message carefully 
 # and try to debug it yourself (this is what you have to do at home -- so
 # it's good to practice here)
@@ -158,14 +163,10 @@ water %>%
 # but it accounts for the uncertainty in estimating
 # diversity
 
-#### AMY! PLEASE FIX ME 
-#### Lines 166-169 (creating bt) require loading DivNet
-devtools::install_github("adw96/DivNet")
-library(DivNet)
-        
+
 bt <- betta(summary(ba)$estimate,
             summary(ba)$error,
-            DivNet::make_design_matrix(water, "SampleType"))
+            make_design_matrix(water, "SampleType"))
 bt$table
 
 # betta() estimates that the mean Order-level
@@ -229,22 +230,27 @@ bt$table
 # Check out our preprint: Willis & Martin (2018+), bioRxiv
 
 # Let's load the package DivNet
-devtools::install_github("adw96/DivNet")
 library(DivNet)
+
+# to test if DivNet loaded correctly, try
+dv_water_testing <- divnet(water, ncores = 1, tuning = "test")
+# If this command loads but other commands
+# don't load, the problem is not DivNet,
+# but a package that DivNet depends on
 
 # DivNet is very flexible, but by default
 # it estimates the
 # microbial network and uses it only to
 # adjust the standard errors on diversity estimates
 
-# If looked at the package parallel
+# *If looked at the package parallel*
 # in the "more R" tutorials, 
 # you should be able to run DivNet in parallel: 
 dv_water <- divnet(water, ncores = 4)
-# (this might take a minute)
-
-# # Otherwise, run it in series:
-# dv_water <- divnet(water)
+# This might take a minute; if it errors,
+# try running it in series (slower
+# but more portable):
+# dv_water <- divnet(water, ncores = 1)
 
 # DivNet outputs a list of the estimates
 # shannon, simpson (alpha diversity)
@@ -280,7 +286,6 @@ plot(water %>% sample_shannon,
 # as a covariate
 dv_water_st <- water %>%
   divnet(X = "SampleType", ncores = 8)
-# save(dv_water_st, file = "dv_water_st.RData")
 
 plot(dv_water_st$shannon, 
      water, 
@@ -314,6 +319,40 @@ plot(dv_water_st$simpson,
      water, 
      col = "SampleType")
 testDiversity(dv_water_st, "simpson")
+
+## To test hypotheses about beta diversity
+# using DivNet, let's pull out our
+# estimated distance matrix:
+bc <- dv_water_st$`bray-curtis`
+
+# You'll notice that all samples with the same
+# SampleType at the same estimate. DivNet uses
+# covariate information to share strength
+# across samples and obtain an estimate
+# about the beta diversity of the *ecosystems*
+#   not the samples
+
+# We can consider the  unique rows using
+bc %>% unique
+
+# Uniquely, DivNet also has variance estimates:
+simplifyBeta(dv_water_st, water, "bray-curtis", "SampleType")
+simplifyBeta(dv_water_st, water, "euclidean", "SampleType")
+
+# You can plot this easily
+simplifyBeta(dv_water_st, water, "bray-curtis", "SampleType") %>%
+  ggplot(aes(x = interaction(Covar1, Covar2), 
+             y = beta_est)) +
+  geom_point() +
+  geom_linerange(aes(ymin = lower, ymax = upper)) + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  xlab("") + ylab("Estimates of Bray-Curtis distance")
+
+# Finally, a teaser! Soon we will have
+# support for phylodivnet(), to estimate UniFrac
+# in the presence of a network. Subscribe
+# to our github/Amy's Twitter feed
+# for updates. 
 
 
 ## THANKS FOR STAYING THROUGH TO THE END! 
