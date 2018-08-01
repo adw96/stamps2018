@@ -1,10 +1,7 @@
-# TODO: 
-# remove save()
-
 ## diversity-lab.R
-## A script to introduce you to alpha diversity estimation and comparison
+## A script to introduce you to diversity estimation and comparison
 
-## Lab author: Amy Willis
+## Lab authors: Amy Willis, Bryan Martin, Pauline Trinh
 
 ## breakaway authors: Amy Willis, Kathryn Barger, John Bunge, 
 ##                        Bryan Martin, 2012+
@@ -39,8 +36,6 @@ water <- GlobalPatterns %>%
                                    "Sediment (estuary)")) %>%
   tax_glom("Order")
 water
-
-save(water, file = "water.RData")
 
 # phyloseq has some inbuilt tools for exploring alpha
 # diversity, but they're not great. They understate richness,
@@ -158,14 +153,10 @@ water %>%
 # but it accounts for the uncertainty in estimating
 # diversity
 
-#### AMY! PLEASE FIX ME 
-#### Lines 166-169 (creating bt) require loading DivNet
-devtools::install_github("adw96/DivNet")
-library(DivNet)
-        
+
 bt <- betta(summary(ba)$estimate,
             summary(ba)$error,
-            DivNet::make_design_matrix(water, "SampleType"))
+            make_design_matrix(water, "SampleType"))
 bt$table
 
 # betta() estimates that the mean Order-level
@@ -280,7 +271,7 @@ plot(water %>% sample_shannon,
 # as a covariate
 dv_water_st <- water %>%
   divnet(X = "SampleType", ncores = 8)
-# save(dv_water_st, file = "dv_water_st.RData")
+
 
 plot(dv_water_st$shannon, 
      water, 
