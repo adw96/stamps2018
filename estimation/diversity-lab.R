@@ -4,13 +4,19 @@
 ## Before starting this tutorial, please run
 devtools::install_github("adw96/breakaway")
 library(breakaway)
-apples(breakaway) ## something should output
+# Let's test whether we can use the apples dataset in breakaway
+# to confirm everything is loading.
+data(apples) 
+head(apples) # Something should output
 devtools::install_github("adw96/DivNet")
 library(DivNet)
 divnet ## something should output
-# If you run into difficulty, 
-# try debugging it yourself, and if you can't, 
-# call over a TA
+
+# If this doesn't work, run install.packages("devtools") and try again
+# If this doesn't work, read the error message carefully 
+# and try to debug it yourself (this is what you have to do at home -- so
+# it's good to practice here)
+# If this doesn't work, call a TA over
 
 ## Lab authors: Amy Willis, Bryan Martin, Pauline Trinh
 
@@ -19,8 +25,10 @@ divnet ## something should output
 
 ## Start by checking what directory you are in with
 getwd()
-## Set it to your local copy: setwd([your directory name here])
 
+# You will need to change your working directory to what you want to work in,
+# probably your STAMPS folder!
+## Set it to your local copy: setwd([your directory name here])
 
 library(tidyverse)
 
@@ -39,29 +47,23 @@ GlobalPatterns %>% sample_data
 # To speed things up, let's just aggregate taxa to the 
 # order level. So we're going to estimate *order* level 
 # diversity 
-# This might take a while, but it will speed things up later
+
+# This will take a while, but it will speed things up later
 water <- GlobalPatterns %>%
   subset_samples(SampleType %in% c("Freshwater", 
                                    "Freshwater (creek)", 
                                    "Ocean", 
                                    "Sediment (estuary)")) %>%
   tax_glom("Order")
+
 water
 
-# phyloseq has some inbuilt tools for exploring alpha
-# diversity, but they're not great. They understate richness,
-# understate uncertainty, and don't allow hypothesis testing
+# phyloseq has some built in tools for exploring alpha
+# diversity, but they're not great. They underestimate richness,
+# underestimate uncertainty, and don't allow hypothesis testing
 
 # Enter: breakaway :D
 # breakaway was specifically designed for these tasks
-
-library(breakaway)
-# If this doesn't work, run install.packages("devtools") and try again
-# If this doesn't work, read the error message carefully 
-# and try to debug it yourself (this is what you have to do at home -- so
-# it's good to practice here)
-# If this doesn't work, call a TA over
-
 
 ## Let's look at the observed richness of the water samples
 observed_c <- sample_richness(water)
@@ -243,7 +245,7 @@ dv_water_testing <- divnet(water, ncores = 1, tuning = "test")
 # microbial network and uses it only to
 # adjust the standard errors on diversity estimates
 
-# *If looked at the package parallel*
+# *If you looked at the package parallel*
 # in the "more R" tutorials, 
 # you should be able to run DivNet in parallel: 
 dv_water <- divnet(water, ncores = 4)
