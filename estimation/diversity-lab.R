@@ -4,11 +4,14 @@
 ## Before starting this tutorial, please run
 devtools::install_github("adw96/breakaway")
 library(breakaway)
+# Let's test whether we can use the apples dataset in breakaway
+# to confirm everything is loading.
 data(apples) 
 head(apples) # Something should output
 devtools::install_github("adw96/DivNet")
 library(DivNet)
 divnet ## something should output
+
 # If this doesn't work, run install.packages("devtools") and try again
 # If this doesn't work, read the error message carefully 
 # and try to debug it yourself (this is what you have to do at home -- so
@@ -22,8 +25,10 @@ divnet ## something should output
 
 ## Start by checking what directory you are in with
 getwd()
-## Set it to your local copy: setwd([your directory name here])
 
+# You will need to change your working directory to what you want to work in,
+# probably your STAMPS folder!
+## Set it to your local copy: setwd([your directory name here])
 
 library(tidyverse)
 
@@ -50,11 +55,12 @@ water <- GlobalPatterns %>%
                                    "Ocean", 
                                    "Sediment (estuary)")) %>%
   tax_glom("Order")
+
 water
 
-# phyloseq has some inbuilt tools for exploring alpha
-# diversity, but they're not great. They understate richness,
-# understate uncertainty, and don't allow hypothesis testing
+# phyloseq has some built in tools for exploring alpha
+# diversity, but they're not great. They underestimate richness,
+# underestimate uncertainty, and don't allow hypothesis testing
 
 # Enter: breakaway :D
 # breakaway was specifically designed for these tasks
