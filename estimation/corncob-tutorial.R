@@ -281,7 +281,7 @@ check_GN04 <- bbdml(formula = OTU.4206 ~ DayAmdmt,
                     phi.formula = ~ DayAmdmt,
                     data = soil)
 
-# While the model fits, we should be skeptical of **any** statisical
+# While the model fits, we should be skeptical of **any** statistical
 # model fit on a single observed count!
 
 # corncob is stable, but new. If you notice any issues, please
