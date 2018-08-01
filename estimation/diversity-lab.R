@@ -19,7 +19,9 @@ library(tidyverse)
 ## Let's use data distributed from phyloseq
 library(phyloseq)
 data("GlobalPatterns")
-GlobalPatterns
+GlobalPatterns 
+## We see that GlobalPatterns is a phyloseq object containing an 
+## otu table, sample data, taxonomy table, and a phylogenetic tree
 
 ## Have a look through GlobalPatterns samples
 GlobalPatterns %>% sample_data
@@ -156,15 +158,20 @@ water %>%
 # but it accounts for the uncertainty in estimating
 # diversity
 
+#### AMY! PLEASE FIX ME 
+#### Lines 166-169 (creating bt) require loading DivNet
+devtools::install_github("adw96/DivNet")
+library(DivNet)
+        
 bt <- betta(summary(ba)$estimate,
             summary(ba)$error,
             DivNet::make_design_matrix(water, "SampleType"))
 bt$table
 
-# betta() estimates that the mean Order-llevel
+# betta() estimates that the mean Order-level
 # diversity in Freshwater is 154 orders.
 # It estimates that the diversity in
-# creeks in significantly higher
+# creeks is significantly higher
 # (on average 23 orders) while oceans
 # have significantly lower diversity
 # (on average, 16 orders). However, 
@@ -173,7 +180,7 @@ bt$table
 
 # Note that these estimates account for
 # different sequencing depths!
-# breakaway estimate of the number of missing species
+# breakaway estimates the number of missing species
 # based on the sequence depth and
 # number of rare taxa in the data
 
