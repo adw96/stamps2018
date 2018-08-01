@@ -141,7 +141,7 @@ corncob_da <- bbdml(formula = OTU.1 ~ DayAmdmt,
                     phi.formula = ~ DayAmdmt,
                     data = soil)
 
-# Let's also plot this data on both the absolute abudance relative abundance scale.
+# Let's also plot this data on both the absolute abudance and relative abundance scale.
 plot(corncob_da, color = "DayAmdmt", AA = TRUE)
 
 plot(corncob_da, color = "DayAmdmt")
@@ -193,8 +193,8 @@ summary(corncob_da)
 # Analysis for Multiple Taxa
 ########################
 
-# What if we want to test all the taxa in our data to see if they ar
-# e differentially-abundant or differentially-variable?
+# What if we want to test all the taxa in our data to see if they are
+# differentially-abundant or differentially-variable?
 # We use the differentialTest function. It will perform the above tests on all taxa,
 # and it will control the false discovery rate to account for multiple comparisons.
 
