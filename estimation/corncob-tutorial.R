@@ -37,7 +37,7 @@
 # corncob!) you will need to have phyloseq installed.
 
 # Install corncob using:
-devtools::install_github("bryandmartin/CORNCOB")
+devtools::install_github("bryandmartin/corncob")
 
 # To begin, we load our example data set as a phyloseq object.
 
